@@ -215,7 +215,7 @@
         <div class="actions" aria-label="Primary actions">
           <a class="button" href="map.html">Regional Map</a>
           <a class="button primary" href="https://topbuild-my.sharepoint.com/:f:/g/personal/michael_guenther_topbuild_cloud/IgD2RNJZeHK6S7Vw0PVUFCieAYpi8KECe2g6IkM8P1Ykab8" target="_blank" rel="noopener">Upload File</a>
-          <a class="button" href="https://topbuild-my.sharepoint.com/:f:/g/personal/michael_guenther_topbuild_cloud/IgD2RNJZeHK6S7Vw0PVUFCieAdMtj8RiWofzhb_zR0tm9_M" target="_blank" rel="noopener">Downloads</a>
+          <button id="downloadsButton" type="button">Downloads</button>
         </div>
       </header>
 
@@ -274,6 +274,9 @@
       ];
 
       const favoriteKey = "tool-hub-minimal-favorites";
+      const downloadsPassword = "priceteam";
+      const downloadsUrl = "https://topbuild-my.sharepoint.com/:f:/g/personal/michael_guenther_topbuild_cloud/IgD2RNJZeHK6S7Vw0PVUFCieAdMtj8RiWofzhb_zR0tm9_M";
+      const downloadsButton = document.querySelector("#downloadsButton");
       const searchInput = document.querySelector("#searchInput");
       const toolGrid = document.querySelector("#toolGrid");
 
@@ -313,6 +316,15 @@
           `;
         }).join("") || `<p class="empty">No matching tools.</p>`;
       }
+
+      downloadsButton.addEventListener("click", () => {
+        const entry = window.prompt("Enter password to open Downloads:");
+        if (entry === downloadsPassword) {
+          window.open(downloadsUrl, "_blank", "noopener");
+        } else if (entry !== null) {
+          window.alert("Incorrect password.");
+        }
+      });
 
       searchInput.addEventListener("input", renderTools);
       toolGrid.addEventListener("click", (event) => {
