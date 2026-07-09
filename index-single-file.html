@@ -1,0 +1,868 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tool Hub</title>
+    <meta
+      name="description"
+      content="A personal home for tools, spreadsheets, maps, and working resources."
+    />
+    <meta property="og:title" content="Tool Hub" />
+    <meta
+      property="og:description"
+      content="A personal home for tools, spreadsheets, maps, and working resources."
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" href="favicon.svg" />
+    <style>
+:root {
+  --background: #f7f4ee;
+  --foreground: #1f2724;
+  --ink-muted: #65706b;
+  --line: rgba(31, 39, 36, 0.14);
+  --green: #1f6f5f;
+  --blue: #2d5f9a;
+  --coral: #b9533f;
+  --gold: #e7b44b;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+}
+
+a,
+button,
+input {
+  font: inherit;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.hero {
+  min-height: 86vh;
+  padding: 24px clamp(18px, 4vw, 64px) 64px;
+  background:
+    linear-gradient(135deg, rgba(31, 111, 95, 0.18), transparent 34%),
+    radial-gradient(circle at 82% 24%, rgba(231, 180, 75, 0.28), transparent 28%),
+    linear-gradient(180deg, #fffdf8 0%, #f7f4ee 100%);
+}
+
+.topbar {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin: 0 auto;
+  max-width: 1180px;
+  min-height: 48px;
+}
+
+.brand,
+.nav-links,
+.hero-actions,
+.card-footer,
+.panel-header,
+.launch-item,
+.filter-row,
+.resource-actions {
+  align-items: center;
+  display: flex;
+}
+
+.brand {
+  color: var(--foreground);
+  font-weight: 750;
+  gap: 10px;
+  text-decoration: none;
+}
+
+.brand-mark,
+.item-icon {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+}
+
+.brand-mark {
+  background: var(--foreground);
+  border-radius: 8px;
+  color: #fffdf8;
+  height: 34px;
+  width: 34px;
+}
+
+.nav-links {
+  gap: clamp(14px, 3vw, 28px);
+}
+
+.nav-links a,
+.secondary-action,
+.card-footer a {
+  color: var(--foreground);
+  text-decoration: none;
+}
+
+.nav-links a {
+  color: var(--ink-muted);
+  font-size: 0.94rem;
+  font-weight: 650;
+}
+
+.hero-grid {
+  display: grid;
+  gap: clamp(32px, 6vw, 86px);
+  grid-template-columns: minmax(0, 1.03fr) minmax(330px, 0.72fr);
+  margin: clamp(56px, 9vw, 116px) auto 0;
+  max-width: 1180px;
+}
+
+.eyebrow {
+  color: var(--green);
+  font-size: 0.78rem;
+  font-weight: 820;
+  letter-spacing: 0;
+  margin: 0 0 12px;
+  text-transform: uppercase;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin-top: 0;
+}
+
+h1 {
+  font-size: clamp(3.2rem, 7vw, 6.8rem);
+  font-weight: 850;
+  line-height: 0.94;
+  margin-bottom: 24px;
+  max-width: 850px;
+}
+
+h2 {
+  font-size: clamp(2rem, 4.2vw, 4.2rem);
+  font-weight: 830;
+  line-height: 1;
+  margin-bottom: 0;
+}
+
+h3 {
+  font-size: 1.24rem;
+  font-weight: 780;
+  line-height: 1.15;
+  margin-bottom: 10px;
+}
+
+.hero-text {
+  color: var(--ink-muted);
+  font-size: clamp(1.05rem, 1.7vw, 1.26rem);
+  line-height: 1.65;
+  max-width: 680px;
+}
+
+.hero-actions {
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 34px;
+}
+
+.primary-action,
+.secondary-action,
+.link-form button {
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 760;
+  min-height: 46px;
+  padding: 13px 18px;
+  text-decoration: none;
+}
+
+.primary-action,
+.link-form button {
+  background: var(--foreground);
+  color: #fffdf8;
+}
+
+.secondary-action {
+  border: 1px solid var(--line);
+  color: var(--foreground);
+}
+
+.launch-panel,
+.resource-card,
+.link-form {
+  background: rgba(255, 253, 248, 0.88);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: 0 24px 70px rgba(31, 39, 36, 0.11);
+}
+
+.launch-panel {
+  align-self: end;
+  padding: 18px;
+}
+
+.panel-header {
+  color: var(--ink-muted);
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.pulse {
+  background: rgba(31, 111, 95, 0.12);
+  border-radius: 999px;
+  color: var(--green);
+  font-size: 0.76rem;
+  font-weight: 780;
+  padding: 6px 10px;
+}
+
+.launch-list {
+  display: grid;
+  gap: 10px;
+}
+
+.launch-item {
+  background: #ffffff;
+  border: 1px solid rgba(31, 39, 36, 0.09);
+  border-radius: 8px;
+  color: var(--foreground);
+  gap: 12px;
+  min-height: 68px;
+  padding: 12px;
+  text-decoration: none;
+}
+
+.item-icon {
+  background: #e9f1ed;
+  border-radius: 8px;
+  color: var(--green);
+  font-weight: 820;
+  height: 42px;
+  width: 42px;
+}
+
+.launch-item strong,
+.launch-item small {
+  display: block;
+}
+
+.launch-item small {
+  color: var(--ink-muted);
+  margin-top: 4px;
+}
+
+.stats-band {
+  background: #1f2724;
+  color: #fffdf8;
+  display: grid;
+  gap: 1px;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.stat {
+  background: rgba(255, 255, 255, 0.04);
+  padding: 28px clamp(18px, 4vw, 52px);
+}
+
+.stat strong,
+.stat span {
+  display: block;
+}
+
+.stat strong {
+  font-size: clamp(2rem, 4vw, 4rem);
+  line-height: 1;
+}
+
+.stat span {
+  color: rgba(255, 253, 248, 0.74);
+  margin-top: 8px;
+}
+
+.workspace-section,
+.collections-band,
+.submit-section {
+  margin: 0 auto;
+  max-width: 1180px;
+  padding: clamp(56px, 8vw, 96px) clamp(18px, 4vw, 64px);
+}
+
+.section-heading {
+  align-items: end;
+  display: grid;
+  gap: 16px;
+  grid-template-columns: minmax(0, 0.9fr) minmax(220px, 0.45fr);
+  margin-bottom: 28px;
+}
+
+.controls {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: 1fr minmax(260px, 360px);
+  margin-bottom: 20px;
+}
+
+.filter-row {
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  background: #fffdf8;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--foreground);
+  cursor: pointer;
+  font-weight: 700;
+  min-height: 42px;
+  padding: 10px 15px;
+}
+
+.chip.active {
+  background: var(--green);
+  border-color: var(--green);
+  color: white;
+}
+
+.search-label,
+.link-form label {
+  color: var(--ink-muted);
+  display: grid;
+  font-size: 0.84rem;
+  font-weight: 720;
+  gap: 7px;
+}
+
+input {
+  background: #fffdf8;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--foreground);
+  min-height: 46px;
+  outline: none;
+  padding: 12px 14px;
+  width: 100%;
+}
+
+input:focus,
+button:focus-visible,
+a:focus-visible {
+  outline: 3px solid rgba(45, 95, 154, 0.28);
+  outline-offset: 3px;
+}
+
+.resource-grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.resource-card {
+  display: grid;
+  min-height: 244px;
+  padding: 20px;
+}
+
+.resource-card p {
+  color: var(--ink-muted);
+  line-height: 1.55;
+}
+
+.card-topline,
+.card-footer {
+  color: var(--ink-muted);
+  display: flex;
+  font-size: 0.82rem;
+  font-weight: 750;
+  justify-content: space-between;
+}
+
+.status {
+  border-radius: 999px;
+  padding: 5px 8px;
+}
+
+.status.live {
+  background: rgba(31, 111, 95, 0.12);
+  color: var(--green);
+}
+
+.status.draft {
+  background: rgba(45, 95, 154, 0.12);
+  color: var(--blue);
+}
+
+.status.idea {
+  background: rgba(185, 83, 63, 0.13);
+  color: var(--coral);
+}
+
+.card-footer {
+  align-self: end;
+  border-top: 1px solid var(--line);
+  gap: 12px;
+  padding-top: 16px;
+}
+
+.resource-actions {
+  gap: 8px;
+}
+
+.card-footer a {
+  color: var(--green);
+}
+
+.favorite-button {
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--ink-muted);
+  cursor: pointer;
+  min-height: 34px;
+  padding: 7px 10px;
+}
+
+.favorite-button.active {
+  background: rgba(231, 180, 75, 0.16);
+  border-color: rgba(231, 180, 75, 0.6);
+  color: #8b6416;
+}
+
+.empty-state {
+  border: 1px dashed var(--line);
+  border-radius: 8px;
+  color: var(--ink-muted);
+  grid-column: 1 / -1;
+  padding: 28px;
+}
+
+.collections-band {
+  background: #fffdf8;
+  max-width: none;
+}
+
+.collections-band > * {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 1052px;
+}
+
+.collection-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.collection-grid > div {
+  border-top: 3px solid var(--gold);
+  padding-top: 18px;
+}
+
+.collection-grid > div:nth-child(2) {
+  border-color: var(--blue);
+}
+
+.collection-grid > div:nth-child(3) {
+  border-color: var(--green);
+}
+
+.collection-kicker {
+  color: var(--ink-muted);
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 800;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+}
+
+.collection-grid p,
+.submit-section p {
+  color: var(--ink-muted);
+  line-height: 1.6;
+}
+
+.submit-section {
+  align-items: start;
+  display: grid;
+  gap: clamp(24px, 5vw, 64px);
+  grid-template-columns: minmax(0, 0.9fr) minmax(320px, 0.58fr);
+}
+
+.link-form {
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+}
+
+.link-form button {
+  border: 0;
+  margin-top: 4px;
+}
+
+@media (max-width: 860px) {
+  .hero-grid,
+  .section-heading,
+  .controls,
+  .submit-section {
+    grid-template-columns: 1fr;
+  }
+
+  .nav-links {
+    display: none;
+  }
+
+  .launch-panel {
+    align-self: stretch;
+  }
+
+  .resource-grid,
+  .collection-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stats-band {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 520px) {
+  .hero {
+    padding-top: 18px;
+  }
+
+  h1 {
+    font-size: 3rem;
+  }
+
+  .primary-action,
+  .secondary-action {
+    justify-content: center;
+    width: 100%;
+  }
+}
+
+    </style>
+  </head>
+  <body>
+    <main>
+      <section class="hero">
+        <nav class="topbar" aria-label="Main navigation">
+          <a class="brand" href="#top" aria-label="Personal tool hub home">
+            <span class="brand-mark">T</span>
+            <span>Tool Hub</span>
+          </a>
+          <div class="nav-links">
+            <a href="#catalog">Catalog</a>
+            <a href="#collections">Collections</a>
+            <a href="#submit">Add link</a>
+          </div>
+        </nav>
+
+        <div class="hero-grid" id="top">
+          <div class="hero-copy">
+            <p class="eyebrow">Personal command center</p>
+            <h1>One organized home for the tools, sheets, and maps you build.</h1>
+            <p class="hero-text">
+              A fast launchpad for spreadsheets, maps, trackers, references, and experiments,
+              with enough structure to keep everything findable as the collection grows.
+            </p>
+            <div class="hero-actions">
+              <a class="primary-action" href="#catalog">Browse catalog</a>
+              <a class="secondary-action" href="#submit">Plan the next link</a>
+            </div>
+          </div>
+
+          <aside class="launch-panel" aria-label="Quick launch preview">
+            <div class="panel-header">
+              <span>Quick launch</span>
+              <span class="pulse">Live</span>
+            </div>
+            <div class="launch-list" id="quickLaunch"></div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="stats-band" aria-label="Hub summary">
+        <div class="stat">
+          <strong>18</strong>
+          <span>Resources tracked</span>
+        </div>
+        <div class="stat">
+          <strong>4</strong>
+          <span>Active collections</span>
+        </div>
+        <div class="stat">
+          <strong>7</strong>
+          <span>Quick-launch links</span>
+        </div>
+      </section>
+
+      <section class="workspace-section" id="catalog">
+        <div class="section-heading">
+          <p class="eyebrow">Catalog</p>
+          <h2>Find the right thing quickly.</h2>
+        </div>
+
+        <div class="controls" aria-label="Catalog filters">
+          <div class="filter-row" id="filters"></div>
+          <label class="search-label">
+            <span>Search catalog</span>
+            <input id="searchInput" placeholder="Try finance, geo, metrics..." />
+          </label>
+        </div>
+
+        <div class="resource-grid" id="resourceGrid"></div>
+      </section>
+
+      <section class="collections-band" id="collections">
+        <div class="section-heading">
+          <p class="eyebrow">Collections</p>
+          <h2>Group resources around how you actually use them.</h2>
+        </div>
+        <div class="collection-grid">
+          <div>
+            <span class="collection-kicker">Daily</span>
+            <h3>Launchpad</h3>
+            <p>Frequently used links for weekly work, open decisions, and repeat check-ins.</p>
+          </div>
+          <div>
+            <span class="collection-kicker">Spatial</span>
+            <h3>Maps</h3>
+            <p>Location-based research, territory views, route ideas, and place notes.</p>
+          </div>
+          <div>
+            <span class="collection-kicker">Analytical</span>
+            <h3>Sheets</h3>
+            <p>Forecasts, trackers, scorecards, and models that need a memorable home.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="submit-section" id="submit">
+        <div>
+          <p class="eyebrow">Next step</p>
+          <h2>Ready for real links when you are.</h2>
+          <p>
+            Replace the sample cards with your actual spreadsheets, maps, and tools,
+            then use the filters to keep the hub tidy as it grows.
+          </p>
+        </div>
+        <form class="link-form">
+          <label>
+            Resource name
+            <input placeholder="Neighborhood analysis map" />
+          </label>
+          <label>
+            Link
+            <input placeholder="https://..." />
+          </label>
+          <button type="button">Stage resource</button>
+        </form>
+      </section>
+    </main>
+    <script>
+const resources = [
+  {
+    name: "Budget Forecast",
+    type: "Spreadsheet",
+    area: "Planning",
+    status: "Live",
+    description: "Scenario workbook for monthly planning, annual targets, and variance checks.",
+    tag: "Finance",
+    url: "#submit",
+  },
+  {
+    name: "Project Intake Tracker",
+    type: "Tool",
+    area: "Operations",
+    status: "Draft",
+    description: "A simple way to triage requests, size effort, and keep next steps visible.",
+    tag: "Workflow",
+    url: "#submit",
+  },
+  {
+    name: "Market Coverage Map",
+    type: "Map",
+    area: "Research",
+    status: "Live",
+    description: "Pinned locations, coverage notes, and territory context for quick reference.",
+    tag: "Geo",
+    url: "#submit",
+  },
+  {
+    name: "Weekly Metrics Sheet",
+    type: "Spreadsheet",
+    area: "Reporting",
+    status: "Live",
+    description: "Recurring numbers, lightweight commentary, and links to source reports.",
+    tag: "Metrics",
+    url: "#submit",
+  },
+  {
+    name: "Resource Library",
+    type: "Reference",
+    area: "Knowledge",
+    status: "Live",
+    description: "Useful docs, templates, examples, and links gathered in one tidy place.",
+    tag: "Docs",
+    url: "#submit",
+  },
+  {
+    name: "Route Planner",
+    type: "Map",
+    area: "Field Work",
+    status: "Idea",
+    description: "A future planning view for stops, drive time, and neighborhood notes.",
+    tag: "Geo",
+    url: "#submit",
+  },
+];
+
+const filters = ["All", "Favorites", "Tool", "Spreadsheet", "Map", "Reference"];
+const favoriteKey = "tool-hub-favorites";
+const filterContainer = document.querySelector("#filters");
+const grid = document.querySelector("#resourceGrid");
+const quickLaunch = document.querySelector("#quickLaunch");
+const searchInput = document.querySelector("#searchInput");
+
+let activeFilter = "All";
+let query = "";
+
+function readFavorites() {
+  try {
+    return new Set(JSON.parse(localStorage.getItem(favoriteKey) || "[]"));
+  } catch {
+    return new Set();
+  }
+}
+
+function writeFavorites(favorites) {
+  localStorage.setItem(favoriteKey, JSON.stringify([...favorites]));
+}
+
+function matches(resource, favorites) {
+  const searchable = `${resource.name} ${resource.type} ${resource.area} ${resource.description} ${resource.tag}`.toLowerCase();
+  const matchesQuery = searchable.includes(query.trim().toLowerCase());
+  const matchesFilter =
+    activeFilter === "All" ||
+    resource.type === activeFilter ||
+    (activeFilter === "Favorites" && favorites.has(resource.name));
+  return matchesQuery && matchesFilter;
+}
+
+function renderFilters() {
+  filterContainer.innerHTML = filters
+    .map(
+      (filter) =>
+        `<button class="chip ${activeFilter === filter ? "active" : ""}" type="button" data-filter="${filter}">${filter}</button>`,
+    )
+    .join("");
+}
+
+function renderQuickLaunch() {
+  quickLaunch.innerHTML = resources
+    .slice(0, 4)
+    .map(
+      (resource) => `
+        <a class="launch-item" href="${resource.url}">
+          <span class="item-icon">${resource.type.slice(0, 1)}</span>
+          <span>
+            <strong>${resource.name}</strong>
+            <small>${resource.area}</small>
+          </span>
+        </a>
+      `,
+    )
+    .join("");
+}
+
+function renderResources() {
+  const favorites = readFavorites();
+  const shown = resources.filter((resource) => matches(resource, favorites));
+
+  if (!shown.length) {
+    grid.innerHTML = `<div class="empty-state">No matching resources yet. Try another filter or search term.</div>`;
+    return;
+  }
+
+  grid.innerHTML = shown
+    .map((resource) => {
+      const isFavorite = favorites.has(resource.name);
+      return `
+        <article class="resource-card">
+          <div class="card-topline">
+            <span>${resource.type}</span>
+            <span class="status ${resource.status.toLowerCase()}">${resource.status}</span>
+          </div>
+          <h3>${resource.name}</h3>
+          <p>${resource.description}</p>
+          <div class="card-footer">
+            <span>${resource.area}</span>
+            <span class="resource-actions">
+              <button
+                class="favorite-button ${isFavorite ? "active" : ""}"
+                type="button"
+                data-favorite="${resource.name}"
+                aria-pressed="${isFavorite}"
+              >
+                ${isFavorite ? "Favorited" : "Favorite"}
+              </button>
+              <a href="${resource.url}" aria-label="Open or add URL for ${resource.name}">Open</a>
+            </span>
+          </div>
+        </article>
+      `;
+    })
+    .join("");
+}
+
+filterContainer.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-filter]");
+  if (!button) return;
+  activeFilter = button.dataset.filter;
+  renderFilters();
+  renderResources();
+});
+
+grid.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-favorite]");
+  if (!button) return;
+  const favorites = readFavorites();
+  const name = button.dataset.favorite;
+  if (favorites.has(name)) {
+    favorites.delete(name);
+  } else {
+    favorites.add(name);
+  }
+  writeFavorites(favorites);
+  renderResources();
+});
+
+searchInput.addEventListener("input", (event) => {
+  query = event.target.value;
+  renderResources();
+});
+
+renderFilters();
+renderQuickLaunch();
+renderResources();
+
+    </script>
+  </body>
+</html>
