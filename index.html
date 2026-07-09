@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Tool Hub</title>
-    <meta name="description" content="A minimal hub for tools, spreadsheets, maps, and downloads.">
+    <meta name="description" content="A minimal hub for tools, spreadsheets, maps, and shared downloads.">
     <style>
       :root {
         --bg: #f6f5f1;
@@ -27,11 +27,6 @@
         overflow: hidden;
       }
 
-      button,
-      input {
-        font: inherit;
-      }
-
       .app {
         display: grid;
         gap: 18px;
@@ -46,27 +41,27 @@
         justify-content: space-between;
       }
 
-      .brand {
-        display: grid;
-        gap: 4px;
-      }
-
       h1 {
         font-size: clamp(2rem, 5vw, 4.4rem);
         line-height: 0.92;
         margin: 0;
       }
 
-      .brand p,
-      .note,
-      .empty,
-      small {
-        color: var(--muted);
+      h2,
+      h3,
+      p {
+        margin: 0;
       }
 
-      .brand p {
-        font-size: 0.98rem;
-        margin: 0;
+      .brand {
+        display: grid;
+        gap: 4px;
+      }
+
+      .brand p,
+      .card p,
+      .note {
+        color: var(--muted);
       }
 
       .actions {
@@ -76,8 +71,8 @@
         justify-content: flex-end;
       }
 
-      button,
-      .upload-label {
+      a.button,
+      button {
         align-items: center;
         background: var(--panel);
         border: 1px solid var(--line);
@@ -85,20 +80,17 @@
         color: var(--ink);
         cursor: pointer;
         display: inline-flex;
+        font: inherit;
         font-weight: 700;
         min-height: 42px;
         padding: 10px 14px;
+        text-decoration: none;
       }
 
-      button.active,
-      .upload-label {
+      a.primary {
         background: var(--ink);
         border-color: var(--ink);
         color: white;
-      }
-
-      input[type="file"] {
-        display: none;
       }
 
       .panel {
@@ -145,7 +137,7 @@
         border-radius: 8px;
         display: grid;
         gap: 10px;
-        min-height: 150px;
+        min-height: 145px;
         padding: 15px;
       }
 
@@ -173,14 +165,7 @@
         color: #60480c;
       }
 
-      h2,
-      h3,
-      p {
-        margin: 0;
-      }
-
       .card p {
-        color: var(--muted);
         font-size: 0.92rem;
         line-height: 1.4;
       }
@@ -190,44 +175,8 @@
         font-weight: 700;
       }
 
-      .downloads {
-        display: none;
-      }
-
-      .downloads.active,
-      .tools.active {
-        display: grid;
-      }
-
-      .tools {
-        display: none;
-      }
-
-      .download-list {
-        display: grid;
-        gap: 10px;
-        overflow: auto;
-        padding-right: 4px;
-      }
-
-      .download-row {
-        align-items: center;
-        border: 1px solid var(--line);
-        border-radius: 8px;
-        display: grid;
-        gap: 10px;
-        grid-template-columns: 1fr auto auto;
-        min-height: 58px;
-        padding: 10px 12px;
-      }
-
-      .download-row a {
-        color: var(--accent);
-        font-weight: 700;
-      }
-
-      .danger {
-        color: #a13f34;
+      .empty {
+        color: var(--muted);
       }
 
       @media (max-width: 860px) {
@@ -261,37 +210,25 @@
       <header>
         <div class="brand">
           <h1>Tool Hub</h1>
-          <p>Tools, sheets, maps, and useful files in one quiet place.</p>
+          <p>Tools, sheets, maps, and shared files in one quiet place.</p>
         </div>
         <div class="actions" aria-label="Primary actions">
-          <button class="active" id="toolsButton" type="button">Tools</button>
-          <button id="downloadsButton" type="button">Downloads</button>
-          <label class="upload-label" for="fileInput">Upload File</label>
-          <input id="fileInput" type="file" multiple>
+          <a class="button primary" href="https://topbuild-my.sharepoint.com/:f:/g/personal/michael_guenther_topbuild_cloud/IgD2RNJZeHK6S7Vw0PVUFCieAYpi8KECe2g6IkM8P1Ykab8" target="_blank" rel="noopener">Upload File</a>
+          <a class="button" href="https://topbuild-my.sharepoint.com/:f:/g/personal/michael_guenther_topbuild_cloud/IgD2RNJZeHK6S7Vw0PVUFCieAdMtj8RiWofzhb_zR0tm9_M" target="_blank" rel="noopener">Downloads</a>
         </div>
       </header>
 
       <section class="panel">
-        <div class="tools active" id="toolsView">
-          <div class="toolbar">
+        <div class="toolbar">
+          <div>
             <h2>Launchpad</h2>
-            <label class="search">
-              <input id="searchInput" placeholder="Search tools, sheets, maps...">
-            </label>
+            <p class="note">Downloads open the shared SharePoint folder for coworkers.</p>
           </div>
-          <div class="grid" id="toolGrid"></div>
+          <label class="search">
+            <input id="searchInput" placeholder="Search tools, sheets, maps...">
+          </label>
         </div>
-
-        <div class="downloads" id="downloadsView">
-          <div class="toolbar">
-            <div>
-              <h2>Downloads</h2>
-              <p class="note">Files uploaded here are saved in this browser only.</p>
-            </div>
-            <button class="danger" id="clearDownloads" type="button">Clear list</button>
-          </div>
-          <div class="download-list" id="downloadList"></div>
-        </div>
+        <div class="grid" id="toolGrid"></div>
       </section>
     </main>
 
@@ -336,39 +273,23 @@
       ];
 
       const favoriteKey = "tool-hub-minimal-favorites";
-      const downloadsKey = "tool-hub-local-downloads";
-      const toolsButton = document.querySelector("#toolsButton");
-      const downloadsButton = document.querySelector("#downloadsButton");
-      const toolsView = document.querySelector("#toolsView");
-      const downloadsView = document.querySelector("#downloadsView");
       const searchInput = document.querySelector("#searchInput");
       const toolGrid = document.querySelector("#toolGrid");
-      const fileInput = document.querySelector("#fileInput");
-      const downloadList = document.querySelector("#downloadList");
-      const clearDownloads = document.querySelector("#clearDownloads");
 
-      function readJson(key, fallback) {
+      function readFavorites() {
         try {
-          return JSON.parse(localStorage.getItem(key) || JSON.stringify(fallback));
+          return new Set(JSON.parse(localStorage.getItem(favoriteKey) || "[]"));
         } catch {
-          return fallback;
+          return new Set();
         }
       }
 
-      function saveJson(key, value) {
-        localStorage.setItem(key, JSON.stringify(value));
-      }
-
-      function showView(view) {
-        const showingDownloads = view === "downloads";
-        toolsView.classList.toggle("active", !showingDownloads);
-        downloadsView.classList.toggle("active", showingDownloads);
-        toolsButton.classList.toggle("active", !showingDownloads);
-        downloadsButton.classList.toggle("active", showingDownloads);
+      function writeFavorites(favorites) {
+        localStorage.setItem(favoriteKey, JSON.stringify([...favorites]));
       }
 
       function renderTools() {
-        const favorites = new Set(readJson(favoriteKey, []));
+        const favorites = readFavorites();
         const query = searchInput.value.trim().toLowerCase();
         const matches = tools.filter((tool) =>
           `${tool.name} ${tool.type} ${tool.description}`.toLowerCase().includes(query)
@@ -392,79 +313,22 @@
         }).join("") || `<p class="empty">No matching tools.</p>`;
       }
 
-      function renderDownloads() {
-        const files = readJson(downloadsKey, []);
-        downloadList.innerHTML = files.map((file, index) => `
-          <div class="download-row">
-            <div>
-              <strong>${file.name}</strong><br>
-              <small>${file.size} KB · uploaded ${file.date}</small>
-            </div>
-            <a href="${file.data}" download="${file.name}">Download</a>
-            <button class="danger" data-remove="${index}" type="button">Remove</button>
-          </div>
-        `).join("") || `<p class="empty">No uploads yet. Use Upload File to add one.</p>`;
-      }
-
-      toolsButton.addEventListener("click", () => showView("tools"));
-      downloadsButton.addEventListener("click", () => {
-        showView("downloads");
-        renderDownloads();
-      });
       searchInput.addEventListener("input", renderTools);
-
       toolGrid.addEventListener("click", (event) => {
         const button = event.target.closest("[data-favorite]");
         if (!button) return;
-        const favorites = new Set(readJson(favoriteKey, []));
+        const favorites = readFavorites();
         const name = button.dataset.favorite;
         if (favorites.has(name)) {
           favorites.delete(name);
         } else {
           favorites.add(name);
         }
-        saveJson(favoriteKey, [...favorites]);
+        writeFavorites(favorites);
         renderTools();
       });
 
-      fileInput.addEventListener("change", async (event) => {
-        const existing = readJson(downloadsKey, []);
-        const files = [...event.target.files];
-        for (const file of files) {
-          const data = await new Promise((resolve) => {
-            const reader = new FileReader();
-            reader.onload = () => resolve(reader.result);
-            reader.readAsDataURL(file);
-          });
-          existing.unshift({
-            name: file.name,
-            size: Math.max(1, Math.round(file.size / 1024)),
-            date: new Date().toLocaleDateString(),
-            data
-          });
-        }
-        saveJson(downloadsKey, existing.slice(0, 20));
-        fileInput.value = "";
-        showView("downloads");
-        renderDownloads();
-      });
-
-      downloadList.addEventListener("click", (event) => {
-        const button = event.target.closest("[data-remove]");
-        if (!button) return;
-        const files = readJson(downloadsKey, []);
-        files.splice(Number(button.dataset.remove), 1);
-        saveJson(downloadsKey, files);
-        renderDownloads();
-      });
-
-      clearDownloads.addEventListener("click", () => {
-        saveJson(downloadsKey, []);
-        renderDownloads();
-      });
-
       renderTools();
-      renderDownloads();
     </script>
   </body>
 </html>
