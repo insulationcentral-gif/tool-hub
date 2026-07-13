@@ -274,7 +274,7 @@
       ];
 
       const favoriteKey = "tool-hub-minimal-favorites";
-      const downloadsPassword = "priceteam";
+      const downloadsPasswordHash = "33cc0e0a6e67ac188270943b7477e7896247954cdb1c69fd528a0c377cd121de";
       const downloadsUrl = "https://topbuild-my.sharepoint.com/:f:/g/personal/michael_guenther_topbuild_cloud/IgD2RNJZeHK6S7Vw0PVUFCieAdMtj8RiWofzhb_zR0tm9_M";
       const downloadsButton = document.querySelector("#downloadsButton");
       const searchInput = document.querySelector("#searchInput");
@@ -317,11 +317,24 @@
         }).join("") || `<p class="empty">No matching tools.</p>`;
       }
 
-      downloadsButton.addEventListener("click", () => {
+      async function sha256Hex(value) {
+        const bytes = new TextEncoder().encode(value);
+        const digest = await crypto.subtle.digest("SHA-256", bytes);
+        return [...new Uint8Array(digest)]
+          .map((byte) => byte.toString(16).padStart(2, "0"))
+          .join("");
+      }
+
+      downloadsButton.addEventListener("click", async () => {
         const entry = window.prompt("Enter password to open Downloads:");
-        if (entry === downloadsPassword) {
+        if (entry === null) {
+          return;
+        }
+
+        const entryHash = await sha256Hex(entry);
+        if (entryHash === downloadsPasswordHash) {
           window.open(downloadsUrl, "_blank", "noopener");
-        } else if (entry !== null) {
+        } else {
           window.alert("Incorrect password.");
         }
       });
