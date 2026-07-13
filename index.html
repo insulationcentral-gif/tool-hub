@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Tool Hub</title>
-    <meta name="description" content="Hub for tools, downloads, and sharing.">
+    <meta name="description" content="A minimal hub for tools, spreadsheets, maps, and shared downloads.">
     <style>
       :root {
         --bg: #f6f5f1;
@@ -274,8 +274,11 @@
       ];
 
       const favoriteKey = "tool-hub-minimal-favorites";
-      const downloadsPasswordHash = "33cc0e0a6e67ac188270943b7477e7896247954cdb1c69fd528a0c377cd121de";
-      const downloadsUrl = "https://topbuild-my.sharepoint.com/:f:/g/personal/michael_guenther_topbuild_cloud/IgD2RNJZeHK6S7Vw0PVUFCieAdMtj8RiWofzhb_zR0tm9_M";
+      const encryptedDownloads = {
+        salt: "7fr4IhLfrDiKhnyaFNvPcg==",
+        iv: "C7JzgnrQ24UOQoKy",
+        data: "xAxHM49t/fjOX40EM9QPsgnJI/8ZWmKc/hrLVclu/KBAAxPgZtqZ8WVsxRWMsDyPtiUZ8JTUyobOXsOW4N/mIqe+2wMyYR78zwhgWXB6JjFgb8QvAnZPgDdvg3TlvBS/9DbXqLoovbfUHPcbKyvhagxnqBsAIG1Sc6lxwuu0AT+xPrXXGfbtcUs7NXyD3wkLTQ=="
+      };
       const downloadsButton = document.querySelector("#downloadsButton");
       const searchInput = document.querySelector("#searchInput");
       const toolGrid = document.querySelector("#toolGrid");
@@ -317,12 +320,39 @@
         }).join("") || `<p class="empty">No matching tools.</p>`;
       }
 
-      async function sha256Hex(value) {
-        const bytes = new TextEncoder().encode(value);
-        const digest = await crypto.subtle.digest("SHA-256", bytes);
-        return [...new Uint8Array(digest)]
-          .map((byte) => byte.toString(16).padStart(2, "0"))
-          .join("");
+      function bytesFromBase64(value) {
+        return Uint8Array.from(atob(value), (character) => character.charCodeAt(0));
+      }
+
+      async function decryptDownloadsUrl(password) {
+        const keyMaterial = await crypto.subtle.importKey(
+          "raw",
+          new TextEncoder().encode(password),
+          "PBKDF2",
+          false,
+          ["deriveKey"]
+        );
+        const key = await crypto.subtle.deriveKey(
+          {
+            name: "PBKDF2",
+            salt: bytesFromBase64(encryptedDownloads.salt),
+            iterations: 150000,
+            hash: "SHA-256"
+          },
+          keyMaterial,
+          { name: "AES-GCM", length: 256 },
+          false,
+          ["decrypt"]
+        );
+        const decrypted = await crypto.subtle.decrypt(
+          {
+            name: "AES-GCM",
+            iv: bytesFromBase64(encryptedDownloads.iv)
+          },
+          key,
+          bytesFromBase64(encryptedDownloads.data)
+        );
+        return new TextDecoder().decode(decrypted);
       }
 
       downloadsButton.addEventListener("click", async () => {
@@ -331,10 +361,10 @@
           return;
         }
 
-        const entryHash = await sha256Hex(entry);
-        if (entryHash === downloadsPasswordHash) {
+        try {
+          const downloadsUrl = await decryptDownloadsUrl(entry);
           window.open(downloadsUrl, "_blank", "noopener");
-        } else {
+        } catch {
           window.alert("Incorrect password.");
         }
       });
